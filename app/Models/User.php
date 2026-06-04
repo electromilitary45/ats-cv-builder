@@ -59,4 +59,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(JobOffer::class);
     }
+
+    public function cvs(): HasMany
+    {
+        return $this->hasMany(CV::class);
+    }
 }
