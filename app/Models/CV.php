@@ -46,4 +46,9 @@ class CV extends Model
     {
         return $this->hasMany(Education::class, 'cv_id')->orderBy('sort_order');
     }
+
+    public function skills(): HasMany
+    {
+        return $this->hasMany(Skill::class, 'cv_id')->orderBy('sort_order');
+    }
 }
