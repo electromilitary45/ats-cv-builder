@@ -36,6 +36,6 @@ class JobOffer extends Model
 
     public function cv(): HasOne
     {
-        return $this->hasOne(CV::class);
+        return $this->hasOne(CV::class, 'job_offer_id');
     }
 }
