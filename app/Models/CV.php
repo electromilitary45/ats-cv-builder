@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CV extends Model
 {
@@ -34,5 +35,10 @@ class CV extends Model
     public function jobOffer(): BelongsTo
     {
         return $this->belongsTo(JobOffer::class);
+    }
+
+    public function workExperiences(): HasMany
+    {
+        return $this->hasMany(WorkExperience::class, 'cv_id')->orderBy('sort_order');
     }
 }
