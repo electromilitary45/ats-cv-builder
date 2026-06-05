@@ -669,6 +669,110 @@
                         </x-primary-button>
                     </form>
                 </div>
+
+                <!-- //=== Idiomas. -->
+                <div class="mt-10 border-t pt-8">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        Idiomas
+                    </h3>
+
+                    <p class="mt-1 text-sm text-gray-600">
+                        Agrega los idiomas relevantes para este CV.
+                    </p>
+
+                    @if ($cv->languages->isNotEmpty())
+                    <div class="mt-6 space-y-3">
+                        @foreach ($cv->languages as $language)
+                        <div class="rounded-lg border border-gray-200 p-4">
+                            <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                                <div>
+                                    <h4 class="font-semibold text-gray-900">
+                                        {{ $language->name }}
+                                    </h4>
+
+                                    <p class="text-sm text-gray-700">
+                                        {{ collect([
+                                    $language->level,
+                                    $language->certification,
+                                ])->filter()->join(' — ') ?: 'Sin nivel especificado' }}
+                                    </p>
+                                </div>
+
+                                <form
+                                    method="POST"
+                                    action="{{ route('job-offers.cv.languages.destroy', [$jobOffer, $language]) }}"
+                                    onsubmit="return confirm('¿Eliminar este idioma?')">
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button
+                                        type="submit"
+                                        class="text-sm font-medium text-red-600 hover:text-red-900">
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                    @endif
+
+                    <form
+                        method="POST"
+                        action="{{ route('job-offers.cv.languages.store', $jobOffer) }}"
+                        class="mt-6 space-y-6">
+                        @csrf
+
+                        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                            <div>
+                                <x-input-label for="language_name" value="Idioma" />
+                                <x-text-input
+                                    id="language_name"
+                                    name="name"
+                                    type="text"
+                                    class="mt-1 block w-full"
+                                    placeholder="Inglés"
+                                    required />
+                                <x-input-error class="mt-2" :messages="$errors->get('name')" />
+                            </div>
+
+                            <div>
+                                <x-input-label for="language_level" value="Nivel" />
+
+                                <select
+                                    id="language_level"
+                                    name="level"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    <option value="">Seleccionar nivel</option>
+                                    <option value="Nativo">Nativo</option>
+                                    <option value="C2">C2</option>
+                                    <option value="C1">C1</option>
+                                    <option value="B2">B2</option>
+                                    <option value="B1">B1</option>
+                                    <option value="A2">A2</option>
+                                    <option value="A1">A1</option>
+                                </select>
+
+                                <x-input-error class="mt-2" :messages="$errors->get('level')" />
+                            </div>
+                        </div>
+
+                        <div>
+                            <x-input-label for="language_certification" value="Certificación" />
+                            <x-text-input
+                                id="language_certification"
+                                name="certification"
+                                type="text"
+                                class="mt-1 block w-full"
+                                placeholder="TOEIC, TOEFL, IELTS..." />
+                            <x-input-error class="mt-2" :messages="$errors->get('certification')" />
+                        </div>
+
+                        <x-primary-button>
+                            Agregar idioma
+                        </x-primary-button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
