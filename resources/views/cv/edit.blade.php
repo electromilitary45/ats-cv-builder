@@ -168,7 +168,7 @@
                     </div>
                 </form>
 
-                <!-- //=== Aquí podríamos agregar secciones para editar experiencia laboral, educación, habilidades, etc. en el futuro. -->
+                <!-- //=== Experiencia laboral. -->
                 <div class="mt-10 border-t pt-8">
                     <h3 class="text-lg font-semibold text-gray-900">
                         Experiencia laboral
@@ -329,6 +329,148 @@
 
                         <x-primary-button>
                             Agregar experiencia
+                        </x-primary-button>
+                    </form>
+                </div>
+
+
+                <!-- //=== Educación. -->
+                <div class="mt-10 border-t pt-8">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        Educación
+                    </h3>
+
+                    <p class="mt-1 text-sm text-gray-600">
+                        Agrega tu formación académica relevante para este CV.
+                    </p>
+
+                    @if ($cv->educations->isNotEmpty())
+                    <div class="mt-6 space-y-4">
+                        @foreach ($cv->educations as $education)
+                        <div class="rounded-lg border border-gray-200 p-4">
+                            <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                                <div>
+                                    <h4 class="font-semibold text-gray-900">
+                                        {{ $education->degree }}
+                                    </h4>
+
+                                    <p class="text-sm text-gray-700">
+                                        {{ $education->institution }}
+                                        @if ($education->location)
+                                        — {{ $education->location }}
+                                        @endif
+                                    </p>
+
+                                    <p class="mt-1 text-xs text-gray-500">
+                                        {{ optional($education->start_date)->format('M Y') }}
+                                        -
+                                        {{ optional($education->end_date)->format('M Y') }}
+                                    </p>
+
+                                    @if ($education->description)
+                                    <p class="mt-3 text-sm text-gray-600">
+                                        {{ $education->description }}
+                                    </p>
+                                    @endif
+                                </div>
+
+                                <form
+                                    method="POST"
+                                    action="{{ route('job-offers.cv.educations.destroy', [$jobOffer, $education]) }}"
+                                    onsubmit="return confirm('¿Eliminar esta educación?')">
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button
+                                        type="submit"
+                                        class="text-sm font-medium text-red-600 hover:text-red-900">
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                    @endif
+
+                    <form
+                        method="POST"
+                        action="{{ route('job-offers.cv.educations.store', $jobOffer) }}"
+                        class="mt-6 space-y-6">
+                        @csrf
+
+                        <div>
+                            <x-input-label for="degree" value="Título / Grado" />
+                            <x-text-input
+                                id="degree"
+                                name="degree"
+                                type="text"
+                                class="mt-1 block w-full"
+                                placeholder="Bachillerato en Ingeniería en Sistemas"
+                                required />
+                            <x-input-error class="mt-2" :messages="$errors->get('degree')" />
+                        </div>
+
+                        <div>
+                            <x-input-label for="institution" value="Institución" />
+                            <x-text-input
+                                id="institution"
+                                name="institution"
+                                type="text"
+                                class="mt-1 block w-full"
+                                placeholder="Universidad de Costa Rica"
+                                required />
+                            <x-input-error class="mt-2" :messages="$errors->get('institution')" />
+                        </div>
+
+                        <div>
+                            <x-input-label for="education_location" value="Ubicación" />
+                            <x-text-input
+                                id="education_location"
+                                name="location"
+                                type="text"
+                                class="mt-1 block w-full"
+                                placeholder="San José, Costa Rica" />
+                            <x-input-error class="mt-2" :messages="$errors->get('location')" />
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                            <div>
+                                <x-input-label for="education_start_date" value="Fecha inicio" />
+                                <x-text-input
+                                    id="education_start_date"
+                                    name="start_date"
+                                    type="date"
+                                    class="mt-1 block w-full" />
+                                <x-input-error class="mt-2" :messages="$errors->get('start_date')" />
+                            </div>
+
+                            <div>
+                                <x-input-label for="education_end_date" value="Fecha fin" />
+                                <x-text-input
+                                    id="education_end_date"
+                                    name="end_date"
+                                    type="date"
+                                    class="mt-1 block w-full" />
+                                <x-input-error class="mt-2" :messages="$errors->get('end_date')" />
+                            </div>
+                        </div>
+
+                        <div>
+                            <x-input-label for="education_description" value="Descripción" />
+
+                            <textarea
+                                id="education_description"
+                                name="description"
+                                rows="4"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                placeholder="Formación en programación, bases de datos e ingeniería de software."></textarea>
+
+                            <x-input-error class="mt-2" :messages="$errors->get('description')" />
+                        </div>
+
+                        <x-primary-button>
+                            Agregar educación
                         </x-primary-button>
                     </form>
                 </div>

@@ -5,6 +5,7 @@ use App\Http\Controllers\JobOfferController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CVController;
 use App\Http\Controllers\CVWorkExperienceController;
+use App\Http\Controllers\CVEducationController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -45,6 +46,12 @@ Route::middleware('auth')->group(function () {
 
     Route::delete('job-offers/{jobOffer}/cv/work-experiences/{workExperience}', [CVWorkExperienceController::class, 'destroy'])
         ->name('job-offers.cv.work-experiences.destroy');
+
+    Route::post('job-offers/{jobOffer}/cv/educations', [CVEducationController::class, 'store'])
+        ->name('job-offers.cv.educations.store');
+
+    Route::delete('job-offers/{jobOffer}/cv/educations/{education}', [CVEducationController::class, 'destroy'])
+        ->name('job-offers.cv.educations.destroy');
 });
 
 require __DIR__ . '/auth.php';
