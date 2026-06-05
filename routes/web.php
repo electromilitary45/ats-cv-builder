@@ -6,6 +6,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CVController;
 use App\Http\Controllers\CVWorkExperienceController;
 use App\Http\Controllers\CVEducationController;
+use App\Http\Controllers\CVSkillController;
+use App\Http\Controllers\CVCertificationController;
+
 
 use Illuminate\Support\Facades\Route;
 
@@ -52,6 +55,18 @@ Route::middleware('auth')->group(function () {
 
     Route::delete('job-offers/{jobOffer}/cv/educations/{education}', [CVEducationController::class, 'destroy'])
         ->name('job-offers.cv.educations.destroy');
+
+    Route::post('job-offers/{jobOffer}/cv/skills', [CVSkillController::class, 'store'])
+        ->name('job-offers.cv.skills.store');
+
+    Route::delete('job-offers/{jobOffer}/cv/skills/{skill}', [CVSkillController::class, 'destroy'])
+        ->name('job-offers.cv.skills.destroy');
+
+    Route::post('job-offers/{jobOffer}/cv/certifications', [CVCertificationController::class, 'store'])
+        ->name('job-offers.cv.certifications.store');
+
+    Route::delete('job-offers/{jobOffer}/cv/certifications/{certification}', [CVCertificationController::class, 'destroy'])
+        ->name('job-offers.cv.certifications.destroy');
 });
 
 require __DIR__ . '/auth.php';

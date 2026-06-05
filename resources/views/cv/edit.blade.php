@@ -474,6 +474,201 @@
                         </x-primary-button>
                     </form>
                 </div>
+
+                <!-- //=== Habilidades. -->
+                <div class="mt-10 border-t pt-8">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        Skills
+                    </h3>
+
+                    <p class="mt-1 text-sm text-gray-600">
+                        Agrega habilidades relevantes para esta posición.
+                    </p>
+
+                    @if ($cv->skills->isNotEmpty())
+                    <div class="mt-6 space-y-3">
+                        @foreach ($cv->skills->groupBy('category') as $category => $skills)
+                        <div class="rounded-lg border border-gray-200 p-4">
+                            <h4 class="text-sm font-semibold text-gray-900">
+                                {{ $category ?: 'Sin categoría' }}
+                            </h4>
+
+                            <div class="mt-3 flex flex-wrap gap-2">
+                                @foreach ($skills as $skill)
+                                <div class="inline-flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700">
+                                    <span>{{ $skill->name }}</span>
+
+                                    <form
+                                        method="POST"
+                                        action="{{ route('job-offers.cv.skills.destroy', [$jobOffer, $skill]) }}"
+                                        onsubmit="return confirm('¿Eliminar esta skill?')">
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button
+                                            type="submit"
+                                            class="font-semibold text-red-600 hover:text-red-900"
+                                            title="Eliminar">
+                                            ×
+                                        </button>
+                                    </form>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                    @endif
+
+                    <form
+                        method="POST"
+                        action="{{ route('job-offers.cv.skills.store', $jobOffer) }}"
+                        class="mt-6 space-y-6">
+                        @csrf
+
+                        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                            <div>
+                                <x-input-label for="skill_category" value="Categoría" />
+                                <x-text-input
+                                    id="skill_category"
+                                    name="category"
+                                    type="text"
+                                    class="mt-1 block w-full"
+                                    placeholder="Backend" />
+                                <x-input-error class="mt-2" :messages="$errors->get('category')" />
+                            </div>
+
+                            <div>
+                                <x-input-label for="skill_name" value="Skill" />
+                                <x-text-input
+                                    id="skill_name"
+                                    name="name"
+                                    type="text"
+                                    class="mt-1 block w-full"
+                                    placeholder="Laravel"
+                                    required />
+                                <x-input-error class="mt-2" :messages="$errors->get('name')" />
+                            </div>
+                        </div>
+
+                        <x-primary-button>
+                            Agregar skill
+                        </x-primary-button>
+                    </form>
+                </div>
+
+                <!-- //=== Certificaciones. -->
+                <div class="mt-10 border-t pt-8">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        Certificaciones
+                    </h3>
+
+                    <p class="mt-1 text-sm text-gray-600">
+                        Agrega certificaciones relevantes para esta posición.
+                    </p>
+
+                    @if ($cv->certifications->isNotEmpty())
+                    <div class="mt-6 space-y-4">
+                        @foreach ($cv->certifications as $certification)
+                        <div class="rounded-lg border border-gray-200 p-4">
+                            <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                                <div>
+                                    <h4 class="font-semibold text-gray-900">
+                                        {{ $certification->name }}
+                                    </h4>
+
+                                    <p class="text-sm text-gray-700">
+                                        {{ collect([
+                                    $certification->issuer,
+                                    optional($certification->issued_at)->format('M Y'),
+                                ])->filter()->join(' — ') }}
+                                    </p>
+
+                                    @if ($certification->url)
+                                    <a
+                                        href="{{ $certification->url }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="mt-2 inline-block text-sm text-indigo-600 hover:text-indigo-900">
+                                        Ver credencial
+                                    </a>
+                                    @endif
+                                </div>
+
+                                <form
+                                    method="POST"
+                                    action="{{ route('job-offers.cv.certifications.destroy', [$jobOffer, $certification]) }}"
+                                    onsubmit="return confirm('¿Eliminar esta certificación?')">
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button
+                                        type="submit"
+                                        class="text-sm font-medium text-red-600 hover:text-red-900">
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                    @endif
+
+                    <form
+                        method="POST"
+                        action="{{ route('job-offers.cv.certifications.store', $jobOffer) }}"
+                        class="mt-6 space-y-6">
+                        @csrf
+
+                        <div>
+                            <x-input-label for="certification_name" value="Nombre de la certificación" />
+                            <x-text-input
+                                id="certification_name"
+                                name="name"
+                                type="text"
+                                class="mt-1 block w-full"
+                                placeholder="Laravel Certification"
+                                required />
+                            <x-input-error class="mt-2" :messages="$errors->get('name')" />
+                        </div>
+
+                        <div>
+                            <x-input-label for="issuer" value="Emisor" />
+                            <x-text-input
+                                id="issuer"
+                                name="issuer"
+                                type="text"
+                                class="mt-1 block w-full"
+                                placeholder="Laravel" />
+                            <x-input-error class="mt-2" :messages="$errors->get('issuer')" />
+                        </div>
+
+                        <div>
+                            <x-input-label for="issued_at" value="Fecha de obtención" />
+                            <x-text-input
+                                id="issued_at"
+                                name="issued_at"
+                                type="date"
+                                class="mt-1 block w-full" />
+                            <x-input-error class="mt-2" :messages="$errors->get('issued_at')" />
+                        </div>
+
+                        <div>
+                            <x-input-label for="certification_url" value="URL de credencial" />
+                            <x-text-input
+                                id="certification_url"
+                                name="url"
+                                type="url"
+                                class="mt-1 block w-full"
+                                placeholder="https://example.com/certification" />
+                            <x-input-error class="mt-2" :messages="$errors->get('url')" />
+                        </div>
+
+                        <x-primary-button>
+                            Agregar certificación
+                        </x-primary-button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
