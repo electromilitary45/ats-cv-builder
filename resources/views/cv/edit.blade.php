@@ -30,7 +30,29 @@
             </div>
             @endif
             <!--GRID-->
-            <div class="grid grid-cols-1 gap-6 2xl:grid-cols-[minmax(0,1fr)_minmax(520px,720px)]">
+            <div
+                x-data="{
+                    cv: {
+                        full_name: @js(old('full_name', $cv->full_name)),
+                        professional_title: @js(old('professional_title', $cv->professional_title)),
+                        email: @js(old('email', $cv->email)),
+                        phone: @js(old('phone', $cv->phone)),
+                        location: @js(old('location', $cv->location)),
+                        linkedin: @js(old('linkedin', $cv->linkedin)),
+                        github: @js(old('github', $cv->github)),
+                        professional_summary: @js(old('professional_summary', $cv->professional_summary)),
+                    },
+                    contactLine() {
+                        return [
+                            this.cv.email,
+                            this.cv.phone,
+                            this.cv.location,
+                            this.cv.linkedin,
+                            this.cv.github,
+                        ].filter(value => value && value.trim().length > 0).join(' | ');
+                    }
+                }"
+                class="grid grid-cols-1 gap-6 2xl:grid-cols-[minmax(0,1fr)_minmax(520px,720px)]">
                 <!-- Información personal -->
                 <div class="bg-white p-6 shadow-sm sm:rounded-lg">
 
@@ -44,6 +66,7 @@
                                 id="full_name"
                                 name="full_name"
                                 type="text"
+                                x-model="cv.full_name"
                                 class="mt-1 block w-full"
                                 :value="old('full_name', $cv->full_name)"
                                 required
@@ -57,6 +80,7 @@
                                 id="professional_title"
                                 name="professional_title"
                                 type="text"
+                                x-model="cv.professional_title"
                                 class="mt-1 block w-full"
                                 :value="old('professional_title', $cv->professional_title)"
                                 placeholder="Fullstack Developer" />
@@ -69,6 +93,7 @@
                                 id="email"
                                 name="email"
                                 type="email"
+                                x-model="cv.email"
                                 class="mt-1 block w-full"
                                 :value="old('email', $cv->email)"
                                 required />
@@ -82,6 +107,7 @@
                                     id="phone"
                                     name="phone"
                                     type="text"
+                                    x-model="cv.phone"
                                     class="mt-1 block w-full"
                                     :value="old('phone', $cv->phone)" />
                                 <x-input-error class="mt-2" :messages="$errors->get('phone')" />
@@ -93,6 +119,7 @@
                                     id="location"
                                     name="location"
                                     type="text"
+                                    x-model="cv.location"
                                     class="mt-1 block w-full"
                                     :value="old('location', $cv->location)"
                                     placeholder="San José, Costa Rica" />
@@ -106,6 +133,7 @@
                                 id="linkedin"
                                 name="linkedin"
                                 type="url"
+                                x-model="cv.linkedin"
                                 class="mt-1 block w-full"
                                 :value="old('linkedin', $cv->linkedin)"
                                 placeholder="https://www.linkedin.com/in/tuusuario" />
@@ -118,6 +146,7 @@
                                 id="github"
                                 name="github"
                                 type="url"
+                                x-model="cv.github"
                                 class="mt-1 block w-full"
                                 :value="old('github', $cv->github)"
                                 placeholder="https://github.com/tuusuario" />
@@ -130,6 +159,7 @@
                                 id="professional_summary"
                                 name="professional_summary"
                                 rows="7"
+                                x-model="cv.professional_summary"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                 placeholder="Escribe un resumen enfocado en esta posición...">{{ old('professional_summary', $cv->professional_summary) }}</textarea>
                             <x-input-error class="mt-2" :messages="$errors->get('professional_summary')" />
@@ -800,38 +830,36 @@
                     <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
                         <div class="mx-auto w-full max-w-[794px] bg-white px-8 py-10 shadow-sm">
                             <div class="border-b border-gray-300 pb-5 text-center">
-                                <h1 class="text-2xl font-bold uppercase tracking-wide text-gray-900">
-                                    {{ $cv->full_name }}
+                                <h1
+                                    class="text-2xl font-bold uppercase tracking-wide text-gray-900"
+                                    x-text="cv.full_name || 'Nombre completo'">
                                 </h1>
 
-                                @if ($cv->professional_title)
-                                <p class="mt-2 text-sm font-medium text-gray-700">
-                                    {{ $cv->professional_title }}
+                                <p
+                                    x-show="cv.professional_title && cv.professional_title.trim().length > 0"
+                                    x-text="cv.professional_title"
+                                    class="mt-2 text-sm font-medium text-gray-700">
                                 </p>
-                                @endif
 
-                                <p class="mt-3 text-xs leading-5 text-gray-600">
-                                    {{ collect([
-                        $cv->email,
-                        $cv->phone,
-                        $cv->location,
-                        $cv->linkedin,
-                        $cv->github,
-                    ])->filter()->join(' | ') }}
+                                <p
+                                    x-show="contactLine().length > 0"
+                                    x-text="contactLine()"
+                                    class="mt-3 text-xs leading-5 text-gray-600">
                                 </p>
                             </div>
 
-                            @if ($cv->professional_summary)
-                            <section class="mt-6">
+                            <section
+                                x-show="cv.professional_summary && cv.professional_summary.trim().length > 0"
+                                class="mt-6">
                                 <h2 class="border-b border-gray-300 pb-1 text-xs font-bold uppercase tracking-widest text-gray-900">
                                     Resumen profesional
                                 </h2>
 
-                                <p class="mt-3 text-xs leading-5 text-gray-700">
-                                    {{ $cv->professional_summary }}
+                                <p
+                                    x-text="cv.professional_summary"
+                                    class="mt-3 whitespace-pre-line text-xs leading-5 text-gray-700">
                                 </p>
                             </section>
-                            @endif
 
                             <section class="mt-6">
                                 <h2 class="border-b border-gray-300 pb-1 text-xs font-bold uppercase tracking-widest text-gray-900">
