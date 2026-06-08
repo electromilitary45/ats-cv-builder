@@ -45,4 +45,26 @@ class CVSkillController extends Controller
             ->route('job-offers.cv.edit', $jobOffer)
             ->with('success', 'Skill eliminada correctamente.');
     }
+
+    public function update(Request $request, JobOffer $jobOffer, int $skill): RedirectResponse
+    {
+        abort_unless($jobOffer->user_id === Auth::id(), 403);
+
+        $cv = $jobOffer->cv()->firstOrFail();
+
+        $skillModel = $cv->skills()
+            ->whereKey($skill)
+            ->firstOrFail();
+
+        $validated = $request->validate([
+            'category' => ['nullable', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
+        ]);
+
+        $skillModel->update($validated);
+
+        return redirect()
+            ->route('job-offers.cv.edit', $jobOffer)
+            ->with('success', 'Skill actualizada correctamente.');
+    }
 }

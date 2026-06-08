@@ -644,34 +644,57 @@
 
                         @if ($cv->skills->isNotEmpty())
                         <div class="mt-6 space-y-3">
-                            @foreach ($cv->skills->groupBy('category') as $category => $skills)
+                            @foreach ($cv->skills as $skill)
                             <div class="rounded-lg border border-gray-200 p-4">
-                                <h4 class="text-sm font-semibold text-gray-900">
-                                    {{ $category ?: 'Sin categoría' }}
-                                </h4>
+                                <form
+                                    method="POST"
+                                    action="{{ route('job-offers.cv.skills.update', [$jobOffer, $skill]) }}"
+                                    class="grid grid-cols-1 gap-4 md:grid-cols-[1fr_1fr_auto]">
+                                    @csrf
+                                    @method('PUT')
 
-                                <div class="mt-3 flex flex-wrap gap-2">
-                                    @foreach ($skills as $skill)
-                                    <div class="inline-flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700">
-                                        <span>{{ $skill->name }}</span>
-
-                                        <form
-                                            method="POST"
-                                            action="{{ route('job-offers.cv.skills.destroy', [$jobOffer, $skill]) }}"
-                                            onsubmit="return confirm('¿Eliminar esta skill?')">
-                                            @csrf
-                                            @method('DELETE')
-
-                                            <button
-                                                type="submit"
-                                                class="font-semibold text-red-600 hover:text-red-900"
-                                                title="Eliminar">
-                                                ×
-                                            </button>
-                                        </form>
+                                    <div>
+                                        <x-input-label for="skill_category_existing_{{ $skill->id }}" value="Categoría" />
+                                        <x-text-input
+                                            id="skill_category_existing_{{ $skill->id }}"
+                                            name="category"
+                                            type="text"
+                                            class="mt-1 block w-full"
+                                            :value="old('category', $skill->category)" />
                                     </div>
-                                    @endforeach
-                                </div>
+
+                                    <div>
+                                        <x-input-label for="skill_name_existing_{{ $skill->id }}" value="Skill" />
+                                        <x-text-input
+                                            id="skill_name_existing_{{ $skill->id }}"
+                                            name="name"
+                                            type="text"
+                                            class="mt-1 block w-full"
+                                            :value="old('name', $skill->name)"
+                                            required />
+                                    </div>
+
+                                    <div class="flex items-end">
+                                        <x-primary-button>
+                                            Guardar
+                                        </x-primary-button>
+                                    </div>
+                                </form>
+
+                                <form
+                                    method="POST"
+                                    action="{{ route('job-offers.cv.skills.destroy', [$jobOffer, $skill]) }}"
+                                    onsubmit="return confirm('¿Eliminar esta skill?')"
+                                    class="mt-3">
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button
+                                        type="submit"
+                                        class="text-sm font-medium text-red-600 hover:text-red-900">
+                                        Eliminar skill
+                                    </button>
+                                </form>
                             </div>
                             @endforeach
                         </div>
