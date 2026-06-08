@@ -453,46 +453,98 @@
                         <div class="mt-6 space-y-4">
                             @foreach ($cv->educations as $education)
                             <div class="rounded-lg border border-gray-200 p-4">
-                                <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                                <form
+                                    method="POST"
+                                    action="{{ route('job-offers.cv.educations.update', [$jobOffer, $education]) }}"
+                                    class="space-y-4">
+                                    @csrf
+                                    @method('PUT')
+
                                     <div>
-                                        <h4 class="font-semibold text-gray-900">
-                                            {{ $education->degree }}
-                                        </h4>
-
-                                        <p class="text-sm text-gray-700">
-                                            {{ $education->institution }}
-                                            @if ($education->location)
-                                            — {{ $education->location }}
-                                            @endif
-                                        </p>
-
-                                        <p class="mt-1 text-xs text-gray-500">
-                                            {{ optional($education->start_date)->format('M Y') }}
-                                            -
-                                            {{ optional($education->end_date)->format('M Y') }}
-                                        </p>
-
-                                        @if ($education->description)
-                                        <p class="mt-3 text-sm text-gray-600">
-                                            {{ $education->description }}
-                                        </p>
-                                        @endif
+                                        <x-input-label for="education_degree_{{ $education->id }}" value="Título / Grado" />
+                                        <x-text-input
+                                            id="education_degree_{{ $education->id }}"
+                                            name="degree"
+                                            type="text"
+                                            class="mt-1 block w-full"
+                                            :value="old('degree', $education->degree)"
+                                            required />
                                     </div>
 
-                                    <form
-                                        method="POST"
-                                        action="{{ route('job-offers.cv.educations.destroy', [$jobOffer, $education]) }}"
-                                        onsubmit="return confirm('¿Eliminar esta educación?')">
-                                        @csrf
-                                        @method('DELETE')
+                                    <div>
+                                        <x-input-label for="education_institution_{{ $education->id }}" value="Institución" />
+                                        <x-text-input
+                                            id="education_institution_{{ $education->id }}"
+                                            name="institution"
+                                            type="text"
+                                            class="mt-1 block w-full"
+                                            :value="old('institution', $education->institution)"
+                                            required />
+                                    </div>
 
-                                        <button
-                                            type="submit"
-                                            class="text-sm font-medium text-red-600 hover:text-red-900">
-                                            Eliminar
-                                        </button>
-                                    </form>
-                                </div>
+                                    <div>
+                                        <x-input-label for="education_location_existing_{{ $education->id }}" value="Ubicación" />
+                                        <x-text-input
+                                            id="education_location_existing_{{ $education->id }}"
+                                            name="location"
+                                            type="text"
+                                            class="mt-1 block w-full"
+                                            :value="old('location', $education->location)" />
+                                    </div>
+
+                                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                        <div>
+                                            <x-input-label for="education_start_date_existing_{{ $education->id }}" value="Fecha inicio" />
+                                            <x-text-input
+                                                id="education_start_date_existing_{{ $education->id }}"
+                                                name="start_date"
+                                                type="date"
+                                                class="mt-1 block w-full"
+                                                :value="old('start_date', optional($education->start_date)->format('Y-m-d'))" />
+                                        </div>
+
+                                        <div>
+                                            <x-input-label for="education_end_date_existing_{{ $education->id }}" value="Fecha fin" />
+                                            <x-text-input
+                                                id="education_end_date_existing_{{ $education->id }}"
+                                                name="end_date"
+                                                type="date"
+                                                class="mt-1 block w-full"
+                                                :value="old('end_date', optional($education->end_date)->format('Y-m-d'))" />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <x-input-label for="education_description_existing_{{ $education->id }}" value="Descripción" />
+
+                                        <textarea
+                                            id="education_description_existing_{{ $education->id }}"
+                                            name="description"
+                                            rows="4"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('description', $education->description) }}</textarea>
+                                    </div>
+
+                                    <div>
+                                        <x-primary-button>
+                                            Guardar educación
+                                        </x-primary-button>
+                                    </div>
+                                </form>
+
+                                <form
+                                    method="POST"
+                                    action="{{ route('job-offers.cv.educations.destroy', [$jobOffer, $education]) }}"
+                                    onsubmit="return confirm('¿Eliminar esta educación?')"
+                                    class="mt-3">
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button
+                                        type="submit"
+                                        class="text-sm font-medium text-red-600 hover:text-red-900">
+                                        Eliminar educación
+                                    </button>
+                                </form>
                             </div>
                             @endforeach
                         </div>

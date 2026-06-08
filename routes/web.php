@@ -67,6 +67,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('job-offers/{jobOffer}/cv/educations/{education}', [CVEducationController::class, 'destroy'])
         ->name('job-offers.cv.educations.destroy');
 
+    Route::put('job-offers/{jobOffer}/cv/educations/{education}', [CVEducationController::class, 'update'])
+        ->name('job-offers.cv.educations.update');
+
     //==skills routes==//
 
     Route::post('job-offers/{jobOffer}/cv/skills', [CVSkillController::class, 'store'])
