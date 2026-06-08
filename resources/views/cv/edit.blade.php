@@ -223,50 +223,114 @@
                         <div class="mt-6 space-y-4">
                             @foreach ($cv->workExperiences as $experience)
                             <div class="rounded-lg border border-gray-200 p-4">
-                                <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                                    <div>
-                                        <h4 class="font-semibold text-gray-900">
-                                            {{ $experience->position }}
-                                        </h4>
+                                <form
+                                    method="POST"
+                                    action="{{ route('job-offers.cv.work-experiences.update', [$jobOffer, $experience]) }}"
+                                    class="space-y-4">
+                                    @csrf
+                                    @method('PUT')
 
-                                        <p class="text-sm text-gray-700">
-                                            {{ $experience->company }}
-                                            @if ($experience->location)
-                                            — {{ $experience->location }}
-                                            @endif
-                                        </p>
+                                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                        <div>
+                                            <x-input-label for="experience_position_{{ $experience->id }}" value="Puesto" />
+                                            <x-text-input
+                                                id="experience_position_{{ $experience->id }}"
+                                                name="position"
+                                                type="text"
+                                                class="mt-1 block w-full"
+                                                :value="old('position', $experience->position)"
+                                                required />
+                                        </div>
 
-                                        <p class="mt-1 text-xs text-gray-500">
-                                            {{ optional($experience->start_date)->format('M Y') }}
-                                            -
-                                            {{ $experience->is_current ? 'Actualidad' : optional($experience->end_date)->format('M Y') }}
-                                        </p>
-
-                                        @if ($experience->description)
-                                        <ul class="mt-3 list-disc space-y-1 pl-5 text-sm text-gray-600">
-                                            @foreach (preg_split('/\r\n|\r|\n/', $experience->description) as $line)
-                                            @if (trim($line))
-                                            <li>{{ ltrim(trim($line), '-• ') }}</li>
-                                            @endif
-                                            @endforeach
-                                        </ul>
-                                        @endif
+                                        <div>
+                                            <x-input-label for="experience_company_{{ $experience->id }}" value="Empresa" />
+                                            <x-text-input
+                                                id="experience_company_{{ $experience->id }}"
+                                                name="company"
+                                                type="text"
+                                                class="mt-1 block w-full"
+                                                :value="old('company', $experience->company)"
+                                                required />
+                                        </div>
                                     </div>
 
-                                    <form
-                                        method="POST"
-                                        action="{{ route('job-offers.cv.work-experiences.destroy', [$jobOffer, $experience]) }}"
-                                        onsubmit="return confirm('¿Eliminar esta experiencia?')">
-                                        @csrf
-                                        @method('DELETE')
+                                    <div>
+                                        <x-input-label for="experience_location_{{ $experience->id }}" value="Ubicación" />
+                                        <x-text-input
+                                            id="experience_location_{{ $experience->id }}"
+                                            name="location"
+                                            type="text"
+                                            class="mt-1 block w-full"
+                                            :value="old('location', $experience->location)" />
+                                    </div>
 
-                                        <button
-                                            type="submit"
-                                            class="text-sm font-medium text-red-600 hover:text-red-900">
-                                            Eliminar
-                                        </button>
-                                    </form>
-                                </div>
+                                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                        <div>
+                                            <x-input-label for="experience_start_date_{{ $experience->id }}" value="Fecha inicio" />
+                                            <x-text-input
+                                                id="experience_start_date_{{ $experience->id }}"
+                                                name="start_date"
+                                                type="date"
+                                                class="mt-1 block w-full"
+                                                :value="old('start_date', optional($experience->start_date)->format('Y-m-d'))" />
+                                        </div>
+
+                                        <div>
+                                            <x-input-label for="experience_end_date_{{ $experience->id }}" value="Fecha fin" />
+                                            <x-text-input
+                                                id="experience_end_date_{{ $experience->id }}"
+                                                name="end_date"
+                                                type="date"
+                                                class="mt-1 block w-full"
+                                                :value="old('end_date', optional($experience->end_date)->format('Y-m-d'))" />
+                                        </div>
+                                    </div>
+
+                                    <label class="flex items-center gap-2">
+                                        <input
+                                            type="checkbox"
+                                            name="is_current"
+                                            value="1"
+                                            class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
+                                            @checked(old('is_current', $experience->is_current))
+                                        >
+
+                                        <span class="text-sm text-gray-700">
+                                            Actualmente trabajo aquí
+                                        </span>
+                                    </label>
+
+                                    <div>
+                                        <x-input-label for="experience_description_{{ $experience->id }}" value="Descripción / bullets" />
+
+                                        <textarea
+                                            id="experience_description_{{ $experience->id }}"
+                                            name="description"
+                                            rows="5"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('description', $experience->description) }}</textarea>
+                                    </div>
+
+                                    <div class="flex items-center gap-4">
+                                        <x-primary-button>
+                                            Guardar experiencia
+                                        </x-primary-button>
+                                    </div>
+                                </form>
+
+                                <form
+                                    method="POST"
+                                    action="{{ route('job-offers.cv.work-experiences.destroy', [$jobOffer, $experience]) }}"
+                                    onsubmit="return confirm('¿Eliminar esta experiencia?')"
+                                    class="mt-3">
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button
+                                        type="submit"
+                                        class="text-sm font-medium text-red-600 hover:text-red-900">
+                                        Eliminar experiencia
+                                    </button>
+                                </form>
                             </div>
                             @endforeach
                         </div>

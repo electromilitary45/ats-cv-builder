@@ -36,6 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::post('job-offers/{jobOffer}/cv', [CVController::class, 'store'])
         ->name('job-offers.cv.store');
 
+
     Route::get('job-offers/{jobOffer}/cv', [CVController::class, 'show'])
         ->name('job-offers.cv.show');
 
@@ -48,17 +49,25 @@ Route::middleware('auth')->group(function () {
     Route::get('job-offers/{jobOffer}/cv/download', [CVController::class, 'downloadPdf'])
         ->name('job-offers.cv.download');
 
+    //==work experience routes==//
+
     Route::post('job-offers/{jobOffer}/cv/work-experiences', [CVWorkExperienceController::class, 'store'])
         ->name('job-offers.cv.work-experiences.store');
 
     Route::delete('job-offers/{jobOffer}/cv/work-experiences/{workExperience}', [CVWorkExperienceController::class, 'destroy'])
         ->name('job-offers.cv.work-experiences.destroy');
 
+    Route::put('job-offers/{jobOffer}/cv/work-experiences/{workExperience}', [CVWorkExperienceController::class, 'update'])
+        ->name('job-offers.cv.work-experiences.update');
+
+    //==education routes==//
     Route::post('job-offers/{jobOffer}/cv/educations', [CVEducationController::class, 'store'])
         ->name('job-offers.cv.educations.store');
 
     Route::delete('job-offers/{jobOffer}/cv/educations/{education}', [CVEducationController::class, 'destroy'])
         ->name('job-offers.cv.educations.destroy');
+
+    //==skills routes==//
 
     Route::post('job-offers/{jobOffer}/cv/skills', [CVSkillController::class, 'store'])
         ->name('job-offers.cv.skills.store');
@@ -66,12 +75,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('job-offers/{jobOffer}/cv/skills/{skill}', [CVSkillController::class, 'destroy'])
         ->name('job-offers.cv.skills.destroy');
 
+    //==certifications routes==//
+
     Route::post('job-offers/{jobOffer}/cv/certifications', [CVCertificationController::class, 'store'])
         ->name('job-offers.cv.certifications.store');
 
     Route::delete('job-offers/{jobOffer}/cv/certifications/{certification}', [CVCertificationController::class, 'destroy'])
         ->name('job-offers.cv.certifications.destroy');
 
+    //==languages routes==//
     Route::post('job-offers/{jobOffer}/cv/languages', [CVLanguageController::class, 'store'])
         ->name('job-offers.cv.languages.store');
 
