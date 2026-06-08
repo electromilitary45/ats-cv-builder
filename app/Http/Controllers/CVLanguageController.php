@@ -46,4 +46,27 @@ class CVLanguageController extends Controller
             ->route('job-offers.cv.edit', $jobOffer)
             ->with('success', 'Idioma eliminado correctamente.');
     }
+
+    public function update(Request $request, JobOffer $jobOffer, int $language): RedirectResponse
+    {
+        abort_unless($jobOffer->user_id === Auth::id(), 403);
+
+        $cv = $jobOffer->cv()->firstOrFail();
+
+        $languageModel = $cv->languages()
+            ->whereKey($language)
+            ->firstOrFail();
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'level' => ['nullable', 'string', 'max:50'],
+            'certification' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $languageModel->update($validated);
+
+        return redirect()
+            ->route('job-offers.cv.edit', $jobOffer)
+            ->with('success', 'Idioma actualizado correctamente.');
+    }
 }

@@ -47,4 +47,28 @@ class CVCertificationController extends Controller
             ->route('job-offers.cv.edit', $jobOffer)
             ->with('success', 'Certificación eliminada correctamente.');
     }
+
+    public function update(Request $request, JobOffer $jobOffer, int $certification): RedirectResponse
+    {
+        abort_unless($jobOffer->user_id === Auth::id(), 403);
+
+        $cv = $jobOffer->cv()->firstOrFail();
+
+        $certificationModel = $cv->certifications()
+            ->whereKey($certification)
+            ->firstOrFail();
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'issuer' => ['nullable', 'string', 'max:255'],
+            'issued_at' => ['nullable', 'date'],
+            'url' => ['nullable', 'url', 'max:2048'],
+        ]);
+
+        $certificationModel->update($validated);
+
+        return redirect()
+            ->route('job-offers.cv.edit', $jobOffer)
+            ->with('success', 'Certificación actualizada correctamente.');
+    }
 }

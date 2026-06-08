@@ -751,44 +751,75 @@
                         <div class="mt-6 space-y-4">
                             @foreach ($cv->certifications as $certification)
                             <div class="rounded-lg border border-gray-200 p-4">
-                                <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                                <form
+                                    method="POST"
+                                    action="{{ route('job-offers.cv.certifications.update', [$jobOffer, $certification]) }}"
+                                    class="space-y-4">
+                                    @csrf
+                                    @method('PUT')
+
                                     <div>
-                                        <h4 class="font-semibold text-gray-900">
-                                            {{ $certification->name }}
-                                        </h4>
-
-                                        <p class="text-sm text-gray-700">
-                                            {{ collect([
-                                    $certification->issuer,
-                                    optional($certification->issued_at)->format('M Y'),
-                                ])->filter()->join(' — ') }}
-                                        </p>
-
-                                        @if ($certification->url)
-                                        <a
-                                            href="{{ $certification->url }}"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            class="mt-2 inline-block text-sm text-indigo-600 hover:text-indigo-900">
-                                            Ver credencial
-                                        </a>
-                                        @endif
+                                        <x-input-label for="certification_name_existing_{{ $certification->id }}" value="Nombre de la certificación" />
+                                        <x-text-input
+                                            id="certification_name_existing_{{ $certification->id }}"
+                                            name="name"
+                                            type="text"
+                                            class="mt-1 block w-full"
+                                            :value="old('name', $certification->name)"
+                                            required />
                                     </div>
 
-                                    <form
-                                        method="POST"
-                                        action="{{ route('job-offers.cv.certifications.destroy', [$jobOffer, $certification]) }}"
-                                        onsubmit="return confirm('¿Eliminar esta certificación?')">
-                                        @csrf
-                                        @method('DELETE')
+                                    <div>
+                                        <x-input-label for="certification_issuer_existing_{{ $certification->id }}" value="Emisor" />
+                                        <x-text-input
+                                            id="certification_issuer_existing_{{ $certification->id }}"
+                                            name="issuer"
+                                            type="text"
+                                            class="mt-1 block w-full"
+                                            :value="old('issuer', $certification->issuer)" />
+                                    </div>
 
-                                        <button
-                                            type="submit"
-                                            class="text-sm font-medium text-red-600 hover:text-red-900">
-                                            Eliminar
-                                        </button>
-                                    </form>
-                                </div>
+                                    <div>
+                                        <x-input-label for="certification_issued_at_existing_{{ $certification->id }}" value="Fecha de obtención" />
+                                        <x-text-input
+                                            id="certification_issued_at_existing_{{ $certification->id }}"
+                                            name="issued_at"
+                                            type="date"
+                                            class="mt-1 block w-full"
+                                            :value="old('issued_at', optional($certification->issued_at)->format('Y-m-d'))" />
+                                    </div>
+
+                                    <div>
+                                        <x-input-label for="certification_url_existing_{{ $certification->id }}" value="URL de credencial" />
+                                        <x-text-input
+                                            id="certification_url_existing_{{ $certification->id }}"
+                                            name="url"
+                                            type="url"
+                                            class="mt-1 block w-full"
+                                            :value="old('url', $certification->url)" />
+                                    </div>
+
+                                    <div>
+                                        <x-primary-button>
+                                            Guardar certificación
+                                        </x-primary-button>
+                                    </div>
+                                </form>
+
+                                <form
+                                    method="POST"
+                                    action="{{ route('job-offers.cv.certifications.destroy', [$jobOffer, $certification]) }}"
+                                    onsubmit="return confirm('¿Eliminar esta certificación?')"
+                                    class="mt-3">
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button
+                                        type="submit"
+                                        class="text-sm font-medium text-red-600 hover:text-red-900">
+                                        Eliminar certificación
+                                    </button>
+                                </form>
                             </div>
                             @endforeach
                         </div>
@@ -864,34 +895,77 @@
                         <div class="mt-6 space-y-3">
                             @foreach ($cv->languages as $language)
                             <div class="rounded-lg border border-gray-200 p-4">
-                                <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                                    <div>
-                                        <h4 class="font-semibold text-gray-900">
-                                            {{ $language->name }}
-                                        </h4>
+                                <form
+                                    method="POST"
+                                    action="{{ route('job-offers.cv.languages.update', [$jobOffer, $language]) }}"
+                                    class="space-y-4">
+                                    @csrf
+                                    @method('PUT')
 
-                                        <p class="text-sm text-gray-700">
-                                            {{ collect([
-                                    $language->level,
-                                    $language->certification,
-                                ])->filter()->join(' — ') ?: 'Sin nivel especificado' }}
-                                        </p>
+                                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                        <div>
+                                            <x-input-label for="language_name_existing_{{ $language->id }}" value="Idioma" />
+                                            <x-text-input
+                                                id="language_name_existing_{{ $language->id }}"
+                                                name="name"
+                                                type="text"
+                                                class="mt-1 block w-full"
+                                                :value="old('name', $language->name)"
+                                                required />
+                                        </div>
+
+                                        <div>
+                                            <x-input-label for="language_level_existing_{{ $language->id }}" value="Nivel" />
+
+                                            <select
+                                                id="language_level_existing_{{ $language->id }}"
+                                                name="level"
+                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                                <option value="" @selected(old('level', $language->level) === null || old('level', $language->level) === '')>
+                                                    Seleccionar nivel
+                                                </option>
+                                                <option value="Nativo" @selected(old('level', $language->level) === 'Nativo')>Nativo</option>
+                                                <option value="C2" @selected(old('level', $language->level) === 'C2')>C2</option>
+                                                <option value="C1" @selected(old('level', $language->level) === 'C1')>C1</option>
+                                                <option value="B2" @selected(old('level', $language->level) === 'B2')>B2</option>
+                                                <option value="B1" @selected(old('level', $language->level) === 'B1')>B1</option>
+                                                <option value="A2" @selected(old('level', $language->level) === 'A2')>A2</option>
+                                                <option value="A1" @selected(old('level', $language->level) === 'A1')>A1</option>
+                                            </select>
+                                        </div>
                                     </div>
 
-                                    <form
-                                        method="POST"
-                                        action="{{ route('job-offers.cv.languages.destroy', [$jobOffer, $language]) }}"
-                                        onsubmit="return confirm('¿Eliminar este idioma?')">
-                                        @csrf
-                                        @method('DELETE')
+                                    <div>
+                                        <x-input-label for="language_certification_existing_{{ $language->id }}" value="Certificación" />
+                                        <x-text-input
+                                            id="language_certification_existing_{{ $language->id }}"
+                                            name="certification"
+                                            type="text"
+                                            class="mt-1 block w-full"
+                                            :value="old('certification', $language->certification)" />
+                                    </div>
 
-                                        <button
-                                            type="submit"
-                                            class="text-sm font-medium text-red-600 hover:text-red-900">
-                                            Eliminar
-                                        </button>
-                                    </form>
-                                </div>
+                                    <div>
+                                        <x-primary-button>
+                                            Guardar idioma
+                                        </x-primary-button>
+                                    </div>
+                                </form>
+
+                                <form
+                                    method="POST"
+                                    action="{{ route('job-offers.cv.languages.destroy', [$jobOffer, $language]) }}"
+                                    onsubmit="return confirm('¿Eliminar este idioma?')"
+                                    class="mt-3">
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button
+                                        type="submit"
+                                        class="text-sm font-medium text-red-600 hover:text-red-900">
+                                        Eliminar idioma
+                                    </button>
+                                </form>
                             </div>
                             @endforeach
                         </div>

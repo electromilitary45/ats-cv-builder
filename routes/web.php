@@ -89,12 +89,18 @@ Route::middleware('auth')->group(function () {
     Route::delete('job-offers/{jobOffer}/cv/certifications/{certification}', [CVCertificationController::class, 'destroy'])
         ->name('job-offers.cv.certifications.destroy');
 
+    Route::put('job-offers/{jobOffer}/cv/certifications/{certification}', [CVCertificationController::class, 'update'])
+        ->name('job-offers.cv.certifications.update');
+
     //==languages routes==//
     Route::post('job-offers/{jobOffer}/cv/languages', [CVLanguageController::class, 'store'])
         ->name('job-offers.cv.languages.store');
 
     Route::delete('job-offers/{jobOffer}/cv/languages/{language}', [CVLanguageController::class, 'destroy'])
         ->name('job-offers.cv.languages.destroy');
+
+    Route::put('job-offers/{jobOffer}/cv/languages/{language}', [CVLanguageController::class, 'update'])
+        ->name('job-offers.cv.languages.update');
 });
 
 require __DIR__ . '/auth.php';
