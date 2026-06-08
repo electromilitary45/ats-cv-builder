@@ -37,6 +37,67 @@ class CV extends Model
         return data_get($this->labels(), $key, $key);
     }
 
+    public function monthYear(?\Carbon\Carbon $date): ?string
+    {
+        if (! $date) {
+            return null;
+        }
+
+        $months = [
+            'es' => [
+                1 => 'Ene',
+                2 => 'Feb',
+                3 => 'Mar',
+                4 => 'Abr',
+                5 => 'May',
+                6 => 'Jun',
+                7 => 'Jul',
+                8 => 'Ago',
+                9 => 'Sep',
+                10 => 'Oct',
+                11 => 'Nov',
+                12 => 'Dic',
+            ],
+            'en' => [
+                1 => 'Jan',
+                2 => 'Feb',
+                3 => 'Mar',
+                4 => 'Apr',
+                5 => 'May',
+                6 => 'Jun',
+                7 => 'Jul',
+                8 => 'Aug',
+                9 => 'Sep',
+                10 => 'Oct',
+                11 => 'Nov',
+                12 => 'Dec',
+            ],
+        ];
+
+        $language = in_array($this->language, ['es', 'en'], true)
+            ? $this->language
+            : 'es';
+
+        return $months[$language][(int) $date->format('n')] . ' ' . $date->format('Y');
+    }
+
+    public function dateRange(?\Carbon\Carbon $startDate, ?\Carbon\Carbon $endDate, bool $isCurrent = false): string
+    {
+        $start = $this->monthYear($startDate);
+
+        if ($isCurrent) {
+            $end = $this->label('present');
+        } else {
+            $end = $this->monthYear($endDate);
+        }
+
+        return collect([$start, $end])->filter()->join(' - ');
+    }
+
+    //================================================================
+    // Relationships
+    //================================================================
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

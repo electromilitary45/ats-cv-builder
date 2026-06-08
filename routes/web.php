@@ -45,6 +45,9 @@ Route::middleware('auth')->group(function () {
     Route::put('job-offers/{jobOffer}/cv', [CVController::class, 'update'])
         ->name('job-offers.cv.update');
 
+    Route::get('job-offers/{jobOffer}/cv/download', [CVController::class, 'downloadPdf'])
+        ->name('job-offers.cv.download');
+
     Route::post('job-offers/{jobOffer}/cv/work-experiences', [CVWorkExperienceController::class, 'store'])
         ->name('job-offers.cv.work-experiences.store');
 

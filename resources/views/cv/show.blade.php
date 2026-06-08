@@ -16,6 +16,12 @@
 
             <div class="flex items-center gap-4">
                 <a
+                    href="{{ route('job-offers.cv.download', $jobOffer) }}"
+                    class="text-sm font-medium text-green-700 hover:text-green-900">
+                    Descargar PDF
+                </a>
+
+                <a
                     href="{{ route('job-offers.cv.edit', $jobOffer) }}"
                     class="text-sm font-medium text-indigo-600 hover:text-indigo-900">
                     Editar CV

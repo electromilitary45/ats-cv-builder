@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Response;
+use Illuminate\Support\Str;
+
 class CVController extends Controller
 {
     public function store(JobOffer $jobOffer): RedirectResponse
@@ -67,6 +71,13 @@ class CVController extends Controller
         return view('cv.edit', compact('jobOffer', 'cv'));
     }
 
+    /**
+     * Este metodo se encarga de actualizar el CV asociado a una oferta de trabajo.
+     * Primero, verifica que el usuario autenticado sea el propietario de la oferta de trabajo.
+     * Luego, valida los datos enviados en la solicitud y actualiza el CV con la información proporcionada.
+     * Finalmente, redirige al usuario a la página de visualización del CV con un mensaje de éxito.
+     */
+
     public function update(Request $request, JobOffer $jobOffer): RedirectResponse
     {
         $this->authorizeJobOfferOwner($jobOffer);
@@ -90,6 +101,30 @@ class CVController extends Controller
         return redirect()
             ->route('job-offers.cv.show', $jobOffer)
             ->with('success', 'CV actualizado correctamente.');
+    }
+
+    public function downloadPdf(JobOffer $jobOffer): Response
+    {
+        $this->authorizeJobOfferOwner($jobOffer);
+
+        $cv = $jobOffer->cv()
+            ->with([
+                'workExperiences',
+                'educations',
+                'skills',
+                'certifications',
+                'languages',
+            ])
+            ->firstOrFail();
+
+        $fileName = Str::slug($cv->full_name . '-' . $jobOffer->title) . '-cv.pdf';
+
+        return Pdf::loadView('cv.pdf', [
+            'jobOffer' => $jobOffer,
+            'cv' => $cv,
+        ])
+            ->setPaper('letter', 'portrait')
+            ->download($fileName);
     }
 
     private function authorizeJobOfferOwner(JobOffer $jobOffer): void

@@ -14,11 +14,19 @@
                 </p>
             </div>
 
-            <a
-                href="{{ route('job-offers.cv.show', $jobOffer) }}"
-                class="text-sm font-medium text-gray-600 hover:text-gray-900">
-                Ver CV
-            </a>
+            <div class="flex items-center gap-4">
+                <a
+                    href="{{ route('job-offers.cv.download', $jobOffer) }}"
+                    class="text-sm font-medium text-green-700 hover:text-green-900">
+                    Descargar PDF
+                </a>
+
+                <a
+                    href="{{ route('job-offers.cv.show', $jobOffer) }}"
+                    class="text-sm font-medium text-gray-600 hover:text-gray-900">
+                    Ver CV
+                </a>
+            </div>
         </div>
     </x-slot>
 
