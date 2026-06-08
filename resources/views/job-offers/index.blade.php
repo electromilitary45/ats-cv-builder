@@ -52,20 +52,55 @@
                                     Publicada: {{ $jobOffer->published_at->format('d/m/Y') }}
                                 </p>
                                 @endif
+
+                                <p class="mt-2 text-xs text-gray-500">
+                                    CV:
+                                    @if ($jobOffer->cv)
+                                    <span class="font-medium text-green-700">Creado</span>
+                                    @else
+                                    <span class="font-medium text-gray-600">Pendiente</span>
+                                    @endif
+                                </p>
                             </div>
 
-                            <div class="flex flex-wrap gap-3 text-sm">
+                            <div class="flex flex-wrap gap-2 text-sm">
                                 <a
                                     href="{{ route('job-offers.show', $jobOffer) }}"
-                                    class="font-medium text-indigo-600 hover:text-indigo-900">
-                                    Ver
+                                    class="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-gray-700 hover:bg-gray-50">
+                                    Ver oferta
                                 </a>
 
                                 <a
                                     href="{{ route('job-offers.edit', $jobOffer) }}"
-                                    class="font-medium text-gray-600 hover:text-gray-900">
-                                    Editar
+                                    class="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-gray-700 hover:bg-gray-50">
+                                    Editar oferta
                                 </a>
+
+                                @if ($jobOffer->cv)
+                                <a
+                                    href="{{ route('job-offers.cv.edit', $jobOffer) }}"
+                                    class="inline-flex items-center rounded-md bg-gray-900 px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-white hover:bg-gray-700">
+                                    Editar CV
+                                </a>
+
+                                <a
+                                    href="{{ route('job-offers.cv.download', $jobOffer) }}"
+                                    class="inline-flex items-center rounded-md bg-green-700 px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-white hover:bg-green-800">
+                                    PDF
+                                </a>
+                                @else
+                                <form
+                                    method="POST"
+                                    action="{{ route('job-offers.cv.store', $jobOffer) }}">
+                                    @csrf
+
+                                    <button
+                                        type="submit"
+                                        class="inline-flex items-center rounded-md bg-gray-900 px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-white hover:bg-gray-700">
+                                        Crear CV
+                                    </button>
+                                </form>
+                                @endif
 
                                 <form
                                     method="POST"
@@ -76,7 +111,7 @@
 
                                     <button
                                         type="submit"
-                                        class="font-medium text-red-600 hover:text-red-900">
+                                        class="inline-flex items-center rounded-md border border-red-300 bg-white px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-red-700 hover:bg-red-50">
                                         Eliminar
                                     </button>
                                 </form>

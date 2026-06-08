@@ -17,6 +17,7 @@ class JobOfferController extends Controller
         $user = Auth::user();
 
         $jobOffers = $user->jobOffers()
+            ->with('cv')
             ->latest()
             ->paginate(10);
 
