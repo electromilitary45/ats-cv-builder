@@ -27,6 +27,16 @@ class CV extends Model
         'language',
     ];
 
+    public function labels(): array
+    {
+        return config("cv.labels.{$this->language}", config('cv.labels.es'));
+    }
+
+    public function label(string $key): string
+    {
+        return data_get($this->labels(), $key, $key);
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

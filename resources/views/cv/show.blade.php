@@ -64,7 +64,7 @@
                 @if ($cv->professional_summary)
                 <section class="mt-8">
                     <h2 class="text-sm font-bold uppercase tracking-widest text-gray-900">
-                        Resumen profesional
+                        {{ $cv->label('professional_summary') }}
                     </h2>
 
                     <p class="mt-3 text-sm leading-6 text-gray-700">
@@ -75,7 +75,7 @@
 
                 <section class="mt-8">
                     <h2 class="text-sm font-bold uppercase tracking-widest text-gray-900">
-                        Experiencia laboral
+                        {{ $cv->label('work_experience') }}
                     </h2>
 
                     @forelse ($cv->workExperiences as $experience)
@@ -116,7 +116,7 @@
 
                 <section class="mt-8">
                     <h2 class="text-sm font-bold uppercase tracking-widest text-gray-900">
-                        Educación
+                        {{ $cv->label('education') }}
                     </h2>
 
                     @forelse ($cv->educations as $education)
@@ -141,7 +141,7 @@
 
                 <section class="mt-8">
                     <h2 class="text-sm font-bold uppercase tracking-widest text-gray-900">
-                        Skills
+                        {{ $cv->label('skills') }}
                     </h2>
 
                     @if ($cv->skills->isNotEmpty())
@@ -165,7 +165,7 @@
 
                 <section class="mt-8">
                     <h2 class="text-sm font-bold uppercase tracking-widest text-gray-900">
-                        Certificaciones
+                        {{ $cv->label('certifications') }}
                     </h2>
 
                     @forelse ($cv->certifications as $certification)
@@ -190,7 +190,7 @@
 
                 <section class="mt-8">
                     <h2 class="text-sm font-bold uppercase tracking-widest text-gray-900">
-                        Idiomas
+                        {{ $cv->label('languages') }}
                     </h2>
 
                     @forelse ($cv->languages as $language)
